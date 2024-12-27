@@ -6,6 +6,7 @@ export interface Task {
     status: TaskStatus;
     createdAt: Date;
     updatedAt: Date;
+    dueDate?: string;
     isCompleted: boolean;
   }
   

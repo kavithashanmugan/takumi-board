@@ -1,20 +1,39 @@
 import React, { useState } from "react";
 import { Plus } from "lucide-react";
 import Task from "./Task";
+import Button from "../components/ui/Button";
 import { Task as TaskType, TaskStatus } from "../types/index";
 
 interface SectionProps {
   sectionId: TaskStatus;
   name: string;
   tasks: TaskType[];
-  onDragStart: (event: React.DragEvent<Element>, taskId: string, sourceSection: TaskStatus) => void;
-  onDrop: (event: React.DragEvent<HTMLDivElement>, destinationSection: TaskStatus) => void;
+  onDragStart: (
+    event: React.DragEvent<Element>,
+    taskId: string,
+    sourceSection: TaskStatus
+  ) => void;
+  onDrop: (
+    event: React.DragEvent<HTMLDivElement>,
+    destinationSection: TaskStatus
+  ) => void;
   onAddTask: (sectionId: TaskStatus, task: TaskType) => void;
 }
 
-const Section: React.FC<SectionProps> = ({ sectionId, name, tasks, onDragStart, onDrop, onAddTask }) => {
+const Section: React.FC<SectionProps> = ({
+  sectionId,
+  name,
+  tasks,
+  onDragStart,
+  onDrop,
+  onAddTask,
+}) => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
-  const [newTask, setNewTask] = useState({ title: "", description: "", assignedTo: "" });
+  const [newTask, setNewTask] = useState({
+    title: "",
+    description: "",
+    assignedTo: "",
+  });
 
   const handleAddTaskClick = () => {
     setIsPopupOpen(true);
@@ -50,48 +69,63 @@ const Section: React.FC<SectionProps> = ({ sectionId, name, tasks, onDragStart, 
       onDragOver={(event) => event.preventDefault()}
       onDrop={(event) => onDrop(event, sectionId)}
     >
-      <div className={`flex items-center justify-between mb-4 p-2 rounded ${getBackgroundColor()}`}>
+      <div
+        className={`flex items-center justify-between mb-4 p-2 rounded ${getBackgroundColor()}`}
+      >
         <span>
           <h2 className="text-sm font-medium text-white">{name}</h2>
         </span>
         <span className="text-sm text-white">{tasks.length}</span>
       </div>
       <div className="space-y-3">
-        <button
-          className="w-full mt-4 py-2 px-4 text-sm text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-md transition-colors duration-200 flex items-center justify-center"
+        <Button
+          label="Add Task"
+          icon={<Plus className="h-4 w-4" />}
           onClick={handleAddTaskClick}
-        >
-          <Plus className="h-4 w-4 mr-2" />
-          Add Task
-        </button>
+          size="medium"
+          variant="custom"
+          className="w-full mt-4 py-2 px-4 text-sm text-gray-500 hover:text-gray-700 hover:bg-gray-200 rounded-md transition-colors duration-200 flex items-center justify-center"
+        />
+
         {tasks.map((task) => (
-          <Task key={task.id} task={task} sectionId={sectionId} onDragStart={onDragStart} />
+          <Task
+            key={task.id}
+            task={task}
+            sectionId={sectionId}
+            onDragStart={onDragStart}
+          />
         ))}
       </div>
 
       {isPopupOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
           <div className="bg-white p-4 rounded-lg shadow-lg w-96">
-            <h2 className="text-lg font-medium mb-4">Create Task</h2>
+            <h2 className="text-lg font-medium mb-4">Add Task</h2>
             <div className="space-y-3">
               <input
                 type="text"
                 placeholder="Title"
                 value={newTask.title}
-                onChange={(e) => setNewTask({ ...newTask, title: e.target.value })}
+                onChange={(e) =>
+                  setNewTask({ ...newTask, title: e.target.value })
+                }
                 className="w-full p-2 border border-gray-300 rounded-md"
               />
               <textarea
                 placeholder="Description"
                 value={newTask.description}
-                onChange={(e) => setNewTask({ ...newTask, description: e.target.value })}
+                onChange={(e) =>
+                  setNewTask({ ...newTask, description: e.target.value })
+                }
                 className="w-full p-2 border border-gray-300 rounded-md"
               />
               <input
                 type="text"
                 placeholder="Assigned To"
                 value={newTask.assignedTo}
-                onChange={(e) => setNewTask({ ...newTask, assignedTo: e.target.value })}
+                onChange={(e) =>
+                  setNewTask({ ...newTask, assignedTo: e.target.value })
+                }
                 className="w-full p-2 border border-gray-300 rounded-md"
               />
             </div>

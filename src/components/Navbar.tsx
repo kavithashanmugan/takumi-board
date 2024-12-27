@@ -1,4 +1,5 @@
 import { useState } from "react";
+import Button from "./ui/Button";
 
 const Navbar = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -26,11 +27,17 @@ const Navbar = () => {
             {dropdownOpen && (
               <div className="absolute right-0 mt-2 bg-white rounded-md shadow-lg">
                 <div className="px-4 py-3 border-b">
-                  <p className="text-sm font-semibold">Kavitha Shanmugan</p>
-                  <p className="text-sm text-gray-500">
-                    kavitha.shanmugan@gmail.com
-                  </p>
-                  <button className="mt-2">Logout</button>
+                <p className="text-sm font-semibold">Kavitha Shanmugan</p>
+                <p className="text-sm text-gray-500">
+                kavitha.shanmugan@gmail.com
+                </p>
+                <Button 
+                  label="Logout" 
+                  onClick={() => console.log('Logout clicked')} 
+                  variant="primary" 
+                  size="medium" 
+                  className="mt-2" 
+                />
                 </div>
               </div>
             )}
