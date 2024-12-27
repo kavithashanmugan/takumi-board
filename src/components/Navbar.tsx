@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 
 const Navbar = () => {
@@ -19,9 +18,9 @@ const Navbar = () => {
           <div className="relative">
           <button
               onClick={toggleDropdown}
-              className="flex items-center focus:outline-none"
+              className="flex items-center shadow-none"
             >
-              <div className="bg-black w-10 h-10 flex items-center justify-center rounded-full">
+              <div className="w-10 h-10 flex items-center justify-center rounded-full">
                 <span className="text-lg font-bold text-white">KS</span>
               </div>
             </button>
