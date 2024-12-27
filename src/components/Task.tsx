@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Task as TaskType, TaskStatus } from "../types/index";
-import { Edit, Trash2 } from "lucide-react";
+import { Edit, Trash2 } from 'lucide-react';
 
 interface TaskProps {
   task: TaskType;
@@ -15,45 +15,57 @@ interface TaskProps {
 const Task: React.FC<TaskProps> = ({ task, sectionId, onDragStart }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editedTask, setEditedTask] = useState(task);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   const handleEditClick = () => {
     setIsEditing(true);
   };
 
   const handleSave = () => {
-    // Here you would typically update the task in your state or backend
     console.log("Save task:", editedTask);
     setIsEditing(false);
+  };
+
+  const handleDeleteClick = () => {
+    setIsDeleteModalOpen(true);
+  };
+
+  const handleDeleteConfirm = () => {
+    console.log("Delete task:", task.id);
+    setIsDeleteModalOpen(false);
   };
 
   return (
     <div>
       <div
-        className="bg-white rounded-lg p-3 shadow-sm border border-gray-200"
+        className="bg-white rounded-lg p-3 shadow-sm border border-gray-200 cursor-pointer"
         draggable
         onDragStart={(event) => onDragStart(event, task.id, sectionId)}
       >
         <div className="flex justify-between items-center">
-          <div className="text-sm font-medium text-gray-900">{task.title}</div>
-          <button
-            className="flex items-center gap-1 px-2 py-1 text-gray-700 hover:bg-gray-300 rounded-md focus:outline-none focus:ring-2"
-            onClick={handleEditClick}
-            title="Edit Task"
-          >
-            <Edit className="h-4 w-4" />
-          </button>
-          <button
-            className="flex items-center gap-1 px-2 py-1 text-red-500 hover:bg-red-100 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
-            title="Delete Task"
-          >
-            <Trash2 className="h-4 w-4" />
-          </button>
+          <span className="text-sm font-medium text-gray-900">{task.title}</span>
+          <div className="flex gap-2">
+            <button
+              title="Edit Task"
+              onClick={handleEditClick}
+              className="p-0 hover:text-blue-600 focus:outline-none bg-white"
+            >
+              <Edit className="h-4 w-4" />
+            </button>
+            <button
+              className="text-red-500 hover:text-red-700 p-0 focus:outline-none bg-white"
+              title="Delete Task"
+              onClick={handleDeleteClick}
+            >
+              <Trash2 className="h-4 w-4" />
+            </button>
+          </div>
         </div>
         <div className="text-xs text-gray-500 mt-1">{task.id}</div>
       </div>
 
       {isEditing && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
           <div className="bg-white p-4 rounded-lg shadow-lg">
             <h2 className="text-lg font-medium mb-2">Edit Task</h2>
             <input
@@ -76,6 +88,29 @@ const Task: React.FC<TaskProps> = ({ task, sectionId, onDragStart }) => {
                 onClick={handleSave}
               >
                 Save
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {isDeleteModalOpen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+          <div className="bg-white p-4 rounded-lg shadow-lg">
+            <h2 className="text-lg font-medium mb-2">Delete Task</h2>
+            <p>Are you sure you want to delete this task?</p>
+            <div className="flex justify-end gap-1 mt-4">
+              <button
+                className="px-4 py-2 bg-gray-300 rounded-md"
+                onClick={() => setIsDeleteModalOpen(false)}
+              >
+                Cancel
+              </button>
+              <button
+                className="px-4 py-2 bg-red-500 text-white rounded-md"
+                onClick={handleDeleteConfirm}
+              >
+                Delete
               </button>
             </div>
           </div>

@@ -3,16 +3,24 @@ import Navbar from "./components/Navbar";
 
 function App() {
   return (
-    <div className="flex flex-col min-h-screen bg-white">
+    <div className="flex justify-center items-center min-h-screen bg-gray-100">
       <Navbar />
-      <main className="flex-1 flex items-center justify-center">
-        <div className="flex justify-center items-center w-full h-full px-4 sm:px-6 lg:px-8">
-          <div className="w-full max-w-screen-xl">
-            <Board />
-          </div>
-        </div>
-      </main>
+    <div className="text-center">
+    <Board />
     </div>
+  </div>
+    // <div className="mx-auto" >
+    //   <div className="flex flex-col bg-white">
+    //   <Navbar />
+    //   <main className="containermx-auto">
+    //     <div className="flex justify-center items-center w-full">
+    //       <div className="w-full max-w-5xl bg-gray-100 p-8 rounded-lg">
+    //         <Board />
+    //       </div>
+    //     </div>
+    //   </main>
+    // </div>
+    // </div>
   );
 }
 

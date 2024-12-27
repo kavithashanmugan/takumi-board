@@ -13,33 +13,33 @@ const Navbar = () => {
         <div className="flex justify-between h-16">
         <div className="flex items-center">
             <img src="/takumi-logo.png" alt="takumi logo" className="mr-2 object-contain" style={{ maxHeight: '125px', maxWidth: 'auto' }} />
-            {/* <span className="text-xl font-bold">Simple Kanban</span> */}
           </div>
           <div className="relative">
-          <button
+            <button
               onClick={toggleDropdown}
-              className="flex items-center shadow-none"
+              className="flex items-center shadow-none bg-white"
             >
-              <div className="w-10 h-10 flex items-center justify-center rounded-full">
-                <span className="text-lg font-bold text-white">KS</span>
+              <div className="flex items-center justify-center rounded-full bg-black w-10 h-10">
+              <span className="text-lg font-bold text-white">KS</span>
               </div>
             </button>
             {dropdownOpen && (
-            <div className="absolute right-0 mt-2">
+              <div className="absolute right-0 mt-2 bg-white rounded-md shadow-lg">
                 <div className="px-4 py-3 border-b">
                   <p className="text-sm font-semibold">Kavitha Shanmugan</p>
                   <p className="text-sm text-gray-500">
                     kavitha.shanmugan@gmail.com
                   </p>
                   <button className="mt-2">Logout</button>
-                  </div>
+                </div>
               </div>
             )}
           </div>
         </div>
       </div>
     </nav>
-  )
-}
+  );
+};
 
-export default Navbar
+export default Navbar;
+

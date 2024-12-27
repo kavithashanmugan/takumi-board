@@ -5,26 +5,26 @@ import { DataType, Task, TaskStatus } from "../types/index";
 const initialData: DataType = {
   "todo": {
     id: "todo",
-    name: "TO DO 1",
-    tasks: [{ 
-      id: "TAK-2", 
-      title: "create drag and drop", 
+    name: "TO DO",
+    tasks: [{
+      id: "TAK-2",
+      title: "create drag and drop",
       status: "todo",
       createdAt: new Date(),
       updatedAt: new Date(),
-      isCompleted: false
+      isCompleted: false,
     }],
   },
   "in-progress": {
     id: "in-progress",
-    name: "IN PROGRESS 1",
-    tasks: [{ 
-      id: "TAK-1", 
-      title: "finish project", 
+    name: "IN PROGRESS",
+    tasks: [{
+      id: "TAK-1",
+      title: "finish project",
       status: "in-progress",
       createdAt: new Date(),
       updatedAt: new Date(),
-      isCompleted: false
+      isCompleted: false,
     }],
   },
   "done": {
@@ -54,7 +54,10 @@ const Board: React.FC = () => {
 
     setData((prevData: DataType) => {
       const sourceTasks = prevData[sourceSection].tasks.filter((task: Task) => task.id !== taskId);
-      const destinationTasks = [...prevData[destinationSection].tasks, {...taskToMove, status: destinationSection, updatedAt: new Date()}];
+      const destinationTasks = [
+        ...prevData[destinationSection].tasks,
+        { ...taskToMove, status: destinationSection, updatedAt: new Date() },
+      ];
 
       return {
         ...prevData,
@@ -64,9 +67,18 @@ const Board: React.FC = () => {
     });
   };
 
+  const handleAddTask = (sectionId: TaskStatus, task: Task) => {
+    setData((prevData) => ({
+      ...prevData,
+      [sectionId]: {
+        ...prevData[sectionId],
+        tasks: [...prevData[sectionId].tasks, task],
+      },
+    }));
+  };
+
   return (
-    <div className="max-w-screen-xl mx-auto">
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 justify-items-center">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mx-auto">
       {(Object.keys(data) as TaskStatus[]).map((sectionId) => (
         <Section
           key={sectionId}
@@ -75,9 +87,9 @@ const Board: React.FC = () => {
           tasks={data[sectionId].tasks}
           onDragStart={handleDragStart}
           onDrop={handleDrop}
+          onAddTask={handleAddTask}
         />
       ))}
-    </div>
     </div>
   );
 };
