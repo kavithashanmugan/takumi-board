@@ -60,6 +60,7 @@ The application follows a modular and scalable file structure:
 
 ### **Core Components**
 - **Task:** Displays, edits, and deletes tasks with ease.
+- **Section** the individual sections todo,in progress and done
 - **Board** Displays all the sections- todo,in progress and done
 - **Modal:** A reusable component for displaying modals (e.g., for editing or viewing task details).
 - **Button:** Customizable button component with various styles and variants.
