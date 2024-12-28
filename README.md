@@ -21,6 +21,7 @@ This project leverages modern web technologies like **React** and **Vite** to en
 - Fully responsive design optimized for all devices.
 - Integration with RESTful APIs for data fetching and persistence.
 - For the POC - we have named the board id to backend1
+- backend url - https://takumi-v2.vercel.app/
 
 ---
 
