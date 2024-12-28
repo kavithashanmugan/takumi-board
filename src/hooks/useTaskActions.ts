@@ -23,7 +23,7 @@ const useTaskActions = (setTasks: React.Dispatch<React.SetStateAction<any>>) => 
       setTasks((prevTasks: any) => {
         const section = updatedTask.status;
         const updatedTasks = prevTasks[section].tasks.map((task: Task) =>
-          task.id === taskId ? updatedTask : task
+          task._id === taskId ? updatedTask : task
         );
 
         return {
@@ -43,7 +43,7 @@ const useTaskActions = (setTasks: React.Dispatch<React.SetStateAction<any>>) => 
         ...prevTasks,
         [sectionId]: {
           ...prevTasks[sectionId],
-          tasks: prevTasks[sectionId].tasks.filter((task: Task) => task.id !== taskId),
+          tasks: prevTasks[sectionId].tasks.filter((task: Task) => task._id !== taskId),
         },
       }));
     } catch (err) {
@@ -57,7 +57,7 @@ const useTaskActions = (setTasks: React.Dispatch<React.SetStateAction<any>>) => 
       setTasks((prevTasks: any) => {
         const sourceSection = movedTask.status;
         const updatedSourceTasks = prevTasks[sourceSection].tasks.filter(
-          (task: Task) => task.id !== taskId
+          (task: Task) => task._id !== taskId
         );
 
         const updatedDestinationTasks = [...prevTasks[destinationSection].tasks, movedTask];
