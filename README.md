@@ -111,3 +111,12 @@ npm run build
 -Drag and Drop in Pure TypeScript and React – Kenneth Lange (https://kennethlange.com/drag-and-drop-in-pure-typescript-and-react/)
 -Install Tailwind CSS with Vite - Tailwind CSS - (https://tailwindcss.com/docs/guides/vite)
 -add dashboard to visualize performance metrics based on completion status
+
+![image](https://github.com/user-attachments/assets/47a7b886-7b81-4640-a893-7f16b980a5e7)
+![image](https://github.com/user-attachments/assets/1455f3fc-dbe8-4f7a-8c4e-9ff0c051f556)
+![image](https://github.com/user-attachments/assets/f9018148-168a-49e8-aee3-ccbb9eda9040)
+![image](https://github.com/user-attachments/assets/01f1df60-d491-4191-bfc8-55ad6b8c1440)
+
+
+
+
