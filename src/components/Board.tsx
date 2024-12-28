@@ -122,6 +122,8 @@ const Board: React.FC = () => {
           onDragStart={handleDragStart}
           onDrop={handleDrop}
           onAddTask={handleAddTask}
+          onUpdateTask={() => {}}
+          onDeleteTask={() => {}}
         />
       ))}
     </div>

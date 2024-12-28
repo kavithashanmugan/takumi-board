@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Plus } from "lucide-react";
 import Task from "./Task";
 import Button from "../components/ui/Button";
+import "react-datepicker/dist/react-datepicker.css";
 import { Task as TaskType, TaskStatus } from "../types/index";
 import { createTask } from "../api/taskApi";
 
@@ -19,6 +20,8 @@ interface SectionProps {
     destinationSection: TaskStatus
   ) => void;
   onAddTask: (sectionId: TaskStatus, task: TaskType) => void;
+  onUpdateTask: (updatedTask: TaskType) => void;
+  onDeleteTask: (taskId: string) => void;
 }
 
 const Section: React.FC<SectionProps> = ({
@@ -28,6 +31,8 @@ const Section: React.FC<SectionProps> = ({
   onDragStart,
   onDrop,
   onAddTask,
+  onUpdateTask,
+  onDeleteTask,
 }) => {
   console.log("tasks", tasks);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -93,7 +98,7 @@ const Section: React.FC<SectionProps> = ({
           onClick={handleAddTaskClick}
           size="medium"
           variant="custom"
-          className="w-full mt-4 py-2 px-4 text-sm text-gray-500 hover:text-black hover:bg-gray-100 rounded-md transition-colors duration-200 flex items-center justify-center"
+          className="w-full mt-4 py-2 px-4 text-sm text-gray-500 hover:text-white hover:bg-gray-100 rounded-md transition-colors duration-200 flex items-center justify-center"
         />
 
         {tasks.map((task, index) => (
@@ -102,6 +107,8 @@ const Section: React.FC<SectionProps> = ({
             task={task}
             sectionId={sectionId}
             onDragStart={onDragStart}
+            onUpdateTask={onUpdateTask}
+            onDeleteTask={onDeleteTask}
           />
         ))}
       </div>

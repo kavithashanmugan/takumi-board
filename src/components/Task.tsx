@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Task as TaskType, TaskStatus } from "../types/index";
 import { Edit, Trash2 } from "lucide-react";
 import Button from "./ui/Button";
+import Modal from "./ui/Modal";
 import { updateTask, deleteTask } from "../api/taskApi";
 
 interface TaskProps {
@@ -12,18 +13,16 @@ interface TaskProps {
     taskId: string,
     sourceColumn: TaskStatus
   ) => void;
+  onUpdateTask: (updatedTask: TaskType) => void;
+  onDeleteTask: (taskId: string) => void;
 }
 
-const Task: React.FC<TaskProps> = ({ task, sectionId, onDragStart }) => {
+const Task: React.FC<TaskProps> = ({ task, sectionId, onDragStart, onUpdateTask, onDeleteTask }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
   const [editedTask, setEditedTask] = useState({ ...task });
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [deleting, setDeleting] = useState(false);
-
-  const handleEditClick = () => {
-    setIsEditing(true);
-  };
 
   const handleSave = async () => {
     try {
@@ -36,13 +35,10 @@ const Task: React.FC<TaskProps> = ({ task, sectionId, onDragStart }) => {
       });
       setEditedTask(updatedTask);
       setIsEditing(false);
+      onUpdateTask(updatedTask); // Call the callback function to update the task in the parent component
     } catch (error) {
       console.error("Failed to update task:", error);
     }
-  };
-
-  const handleDeleteClick = () => {
-    setIsDeleteModalOpen(true);
   };
 
   const handleDeleteConfirm = async () => {
@@ -50,6 +46,7 @@ const Task: React.FC<TaskProps> = ({ task, sectionId, onDragStart }) => {
     try {
       await deleteTask(task._id || "");
       setIsDeleteModalOpen(false);
+      onDeleteTask(task._id || ""); // Call the callback function to delete the task in the parent component
       console.log("Task deleted successfully");
     } catch (error) {
       console.error("Failed to delete task:", error);
@@ -66,6 +63,14 @@ const Task: React.FC<TaskProps> = ({ task, sectionId, onDragStart }) => {
     return date ? new Date(date).toLocaleString() : "N/A";
   };
 
+  const formatDueDate = (date?: Date | string): string => {
+    if (!date) return "";
+    const parsedDate = new Date(date);
+    if (isNaN(parsedDate.getTime())) return "";
+    return parsedDate.toISOString().split("T")[0];
+  };
+  
+
   return (
     <div>
       <div
@@ -74,188 +79,182 @@ const Task: React.FC<TaskProps> = ({ task, sectionId, onDragStart }) => {
         onDragStart={(event) => onDragStart(event, task._id || "", sectionId)}
         onDoubleClick={() => setShowDetails(true)}
       >
-        <div className="flex justify-between items-center">
-          <span className="text-sm font-medium text-gray-900 text-left">
-            {task.title}
-          </span>
+        <div className="flex justify-between text-left">
+          <span className="text-sm font-medium text-gray-900">{task.title}</span>
           <div className="flex gap-2">
             <button
               title="Edit Task"
-              onClick={handleEditClick}
-              className="p-0 hover:text-blue-600 focus:outline-none bg-white"
+              onClick={() => setIsEditing(true)}
+              className="hover:text-blue-600 focus:outline-none"
             >
               <Edit className="h-4 w-4" />
             </button>
             <button
-              className="text-red-500 hover:text-red-700 p-0 focus:outline-none bg-white"
               title="Delete Task"
-              onClick={handleDeleteClick}
+              onClick={() => setIsDeleteModalOpen(true)}
+              className="text-red-500 hover:text-red-700 focus:outline-none"
             >
               <Trash2 className="h-4 w-4" />
             </button>
           </div>
         </div>
-        <div className="flex text-xs text-gray-500 mt-1">
-          {task._id || "N/A"}
-        </div>
+        <div className="text-xs text-gray-500 mt-1 text-left">{task.assignedTo ?? "Unassigned"}</div>
       </div>
 
       {showDetails && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-[600px] max-h-[80vh] overflow-y-auto">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-lg font-medium">Task Details</h2>
-              <button
-                onClick={() => setShowDetails(false)}
-                className="text-gray-500 hover:text-gray-700 focus:outline-none"
-              >
-                ✖
-              </button>
+        <Modal onClose={() => setShowDetails(false)}>
+          <div className="p-6">
+            <h2 className="text-xl font-bold mb-6 border-b pb-2">Task Details</h2>
+            <div className="space-y-4">
+              <div className="flex justify-between items-center border-b pb-2">
+                <strong className="text-gray-600 text-md">Title</strong>
+                <span className="text-gray-800">{task.title}</span>
+              </div>
+
+              <div className="flex justify-between items-start border-b pb-2">
+                <strong className="text-gray-600 text-md">Description</strong>
+                <p className="text-gray-800">{task.description || "N/A"}</p>
+              </div>
+
+              <div className="flex justify-between items-center border-b pb-2">
+                <strong className="text-gray-600 text-md">Status</strong>
+                <span
+                  className={`px-2 py-1 text-sm rounded ${
+                    task.isCompleted
+                      ? "bg-green-100 text-green-800"
+                      : "bg-red-100 text-red-800"
+                  }`}
+                >
+                  {task.isCompleted ? "Completed" : "Not Completed"}
+                </span>
+              </div>
+
+              <div className="flex justify-between items-center border-b pb-2">
+                <strong className="text-gray-600 text-md">Created At</strong>
+                <span className="text-gray-800 text-left">{formatDate(task.createdAt)}</span>
+              </div>
+
+              <div className="flex justify-between  border-b pb-2">
+                <strong className="text-gray-600 text-md">Updated At</strong>
+                <span className="text-gray-800">{formatDate(task.updatedAt)}</span>
+              </div>
+              <div className="flex justify-between items-center border-b pb-2">
+                <strong className="text-gray-600 text-md">Assigned To</strong>
+                <div className="flex items-center space-x-2">
+                  <span className="text-gray-800">{task.assignedTo || "N/A"}</span>
+                </div>
+              </div>
+
+              <div className="flex justify-between items-center border-b pb-2">
+                <strong className="text-gray-600 text-md">Due Date</strong>
+                <span className="text-gray-800">{formatDate(task.dueDate)}</span>
+              </div>
             </div>
-            <div className="space-y-3">
-              <div>
-                <strong>Title:</strong> {task.title}
-              </div>
-              <div>
-                <strong>Description:</strong> {task.description || "N/A"}
-              </div>
-              <div>
-                <strong>Completion Status:</strong>{" "}
-                {task.isCompleted ? "Completed" : "Not Completed"}
-              </div>
-              <div>
-                <strong>Created At:</strong> {formatDate(task.createdAt)}
-              </div>
-              <div>
-                <strong>Updated At:</strong> {formatDate(task.updatedAt)}
-              </div>
-              <div>
-                <strong>Assigned To:</strong> {task.assignedTo || "N/A"}
-              </div>
-              <div>
-                <strong>Task ID:</strong> {task._id || "N/A"}
-              </div>
-              <div>
-                <strong>Due Date:</strong>
-                <input
-                  type="date"
-                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-                  value={task.dueDate || ""}
-                  onChange={handleDueDateChange}
-                />
-              </div>
-            </div>
-            <div className="flex justify-end gap-2 mt-4">
+
+            <div className="flex justify-end mt-6">
               <Button
                 label="Close"
                 onClick={() => setShowDetails(false)}
                 variant="secondary"
-                size="small"
+                className="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-md"
               />
             </div>
           </div>
-        </div>
+        </Modal>
+      )}
+
+      {isEditing && (
+        <Modal onClose={() => setIsEditing(false)}>
+          <h2 className="font-bold text-2xl">Edit Task</h2>
+          <div className="space-y-3 mt-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 text-left">
+                Title
+              </label>
+              <input
+                type="text"
+                value={editedTask.title}
+                onChange={(e) =>
+                  setEditedTask({ ...editedTask, title: e.target.value })
+                }
+                className="block w-full p-2 border border-gray-300 rounded-md"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 text-left">
+                Description
+              </label>
+              <textarea
+                value={editedTask.description}
+                onChange={(e) =>
+                  setEditedTask({
+                    ...editedTask,
+                    description: e.target.value,
+                  })
+                }
+                className="block w-full p-2 border border-gray-300 rounded-md"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 text-left">
+                Assigned To
+              </label>
+              <input
+                type="text"
+                value={editedTask.assignedTo}
+                onChange={(e) =>
+                  setEditedTask({
+                    ...editedTask,
+                    assignedTo: e.target.value,
+                  })
+                }
+                className="block w-full p-2 border border-gray-300 rounded-md"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 text-left">
+                Due Date
+              </label>
+              <input
+                type="date"
+                value={formatDueDate(editedTask.dueDate)}
+                onChange={handleDueDateChange}
+                className="block w-full p-2 border border-gray-300 rounded-md"
+              />
+            </div>
+          </div>
+          <div className="flex justify-end mt-4">
+            <Button
+              label="Save Changes"
+              onClick={handleSave}
+              variant="success"
+            />
+          </div>
+        </Modal>
       )}
 
       {isDeleteModalOpen && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-[400px]">
-            <h2 className="text-lg font-medium mb-2">
-              Delete Task {task.title}?
-            </h2>
-            <p className="text-sm text-gray-700">
-              You are about to permanently delete this task. This action cannot
-              be undone.
-            </p>
-            <div className="flex justify-end gap-2 mt-4">
-              <Button
-                label="Cancel"
-                onClick={() => setIsDeleteModalOpen(false)}
-                variant="secondary"
-                size="medium"
-              />
-              <Button
-                label={deleting ? "Deleting..." : "Delete"}
-                onClick={handleDeleteConfirm}
-                variant="danger"
-                size="medium"
-                disabled={deleting}
-              />
-            </div>
-          </div>
-        </div>
-      )}
-
-{isEditing && (
-  <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-    <div className="bg-white p-6 rounded-lg shadow-lg w-[600px] max-h-[80vh] overflow-y-auto">
-      <div className="flex justify-between items-center border-b pb-4 mb-4">
-        <h2 className="text-xl font-semibold">Edit Task</h2>
-        <button
-          onClick={() => setIsEditing(false)}
-          className="text-gray-400 hover:text-gray-600 focus:outline-none"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-6 w-6"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M6 18L18 6M6 6l12 12"
+        <Modal onClose={() => setIsDeleteModalOpen(false)}>
+          <h2 className="text-lg font-semibold">Confirm Delete</h2>
+          <p className="text-sm text-gray-700 mt-2">
+            Are you sure you want to delete this task? This action cannot be
+            undone.
+          </p>
+          <div className="flex justify-end mt-4 gap-2">
+            <Button
+              label="Cancel"
+              onClick={() => setIsDeleteModalOpen(false)}
+              variant="secondary"
             />
-          </svg>
-        </button>
-      </div>
-      <div className="space-y-2">
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1 text-left">Title</label>
-          <input
-            type="text"
-            placeholder="Task title"
-            value={editedTask.title}
-            onChange={(e) => setEditedTask({ ...editedTask, title: e.target.value })}
-            className="w-full p-3 border border-gray-300 rounded-md focus:ring focus:ring-blue-500 focus:outline-none"
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1  text-left">Description</label>
-          <textarea
-            placeholder="Task description"
-            value={editedTask.description}
-            onChange={(e) => setEditedTask({ ...editedTask, description: e.target.value })}
-            className="w-full p-3 border border-gray-300 rounded-md focus:ring focus:ring-blue-500 focus:outline-none"
-            rows={4}
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1 text-left">Assigned To</label>
-          <input
-            type="text"
-            placeholder="Assignee name"
-            value={editedTask.assignedTo}
-            onChange={(e) => setEditedTask({ ...editedTask, assignedTo: e.target.value })}
-            className="w-full p-3 border border-gray-300 rounded-md focus:ring focus:ring-blue-500 focus:outline-none"
-          />
-        </div>
-      </div>
-      <div className="flex justify-center gap-4 mt-6">
-        <Button
-          label="Save"
-          onClick={handleSave}
-          variant="success"
-          size="medium"
-          className="px-6 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-md w-half"
-        />
-      </div>
-    </div>
-  </div>
-)}
-
+            <Button
+              label={deleting ? "Deleting..." : "Delete"}
+              onClick={handleDeleteConfirm}
+              variant="danger"
+              disabled={deleting}
+            />
+          </div>
+        </Modal>
+      )}
     </div>
   );
 };
