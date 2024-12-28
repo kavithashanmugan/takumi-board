@@ -17,22 +17,22 @@ const Board: React.FC = () => {
     const loadTasks = async () => {
       try {
         const tasks: Task[] = await fetchTasks();
-
+  
         const standardizedTasks = tasks.map((task) => ({
           ...task,
           id: task._id,
         }));
-
+  
         const groupedTasks: DataType = {
           "todo": { id: "todo", name: "TO DO", tasks: [] },
           "in-progress": { id: "in-progress", name: "IN PROGRESS", tasks: [] },
           "done": { id: "done", name: "DONE", tasks: [] },
         };
-
+  
         standardizedTasks.forEach((task) => {
           groupedTasks[task.status]?.tasks.push(task);
         });
-
+  
         setData(groupedTasks);
         console.log("Tasks loaded:", groupedTasks);
         setLoading(false);
@@ -42,9 +42,17 @@ const Board: React.FC = () => {
         setLoading(false);
       }
     };
-
+  
     loadTasks();
+  
+    const intervalId = setInterval(() => {
+      loadTasks();
+    }, 30000);
+    return () => {
+      clearInterval(intervalId);
+    };
   }, []);
+  
 
   const handleDragStart = (
     event: React.DragEvent<Element>,
