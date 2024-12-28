@@ -17,22 +17,22 @@ const Board: React.FC = () => {
     const loadTasks = async () => {
       try {
         const tasks: Task[] = await fetchTasks();
-  
+
         const standardizedTasks = tasks.map((task) => ({
           ...task,
           id: task._id,
         }));
-  
+
         const groupedTasks: DataType = {
           "todo": { id: "todo", name: "TO DO", tasks: [] },
           "in-progress": { id: "in-progress", name: "IN PROGRESS", tasks: [] },
           "done": { id: "done", name: "DONE", tasks: [] },
         };
-  
+
         standardizedTasks.forEach((task) => {
           groupedTasks[task.status]?.tasks.push(task);
         });
-  
+
         setData(groupedTasks);
         console.log("Tasks loaded:", groupedTasks);
         setLoading(false);
@@ -42,17 +42,9 @@ const Board: React.FC = () => {
         setLoading(false);
       }
     };
-  
+
     loadTasks();
-  
-    const intervalId = setInterval(() => {
-      loadTasks();
-    }, 30000);
-    return () => {
-      clearInterval(intervalId);
-    };
   }, []);
-  
 
   const handleDragStart = (
     event: React.DragEvent<Element>,
@@ -101,6 +93,43 @@ const Board: React.FC = () => {
     }
   };
 
+  const handleDeleteTask = (taskId: string) => {
+    setData((prevData) => {
+      const updatedData = { ...prevData };
+  
+      Object.keys(updatedData).forEach((sectionId) => {
+        updatedData[sectionId as TaskStatus].tasks = updatedData[
+          sectionId as TaskStatus
+        ].tasks.filter((task) => task._id !== taskId);
+      });
+  
+      return updatedData;
+    });
+  };
+  
+  const handleUpdateTask = (updatedTask: Task) => {
+    setData((prevData) => {
+      const updatedData = { ...prevData };
+  
+      const currentSection = Object.keys(updatedData).find((sectionId) =>
+        updatedData[sectionId as TaskStatus].tasks.some(
+          (task) => task._id === updatedTask._id
+        )
+      ) as TaskStatus;
+  
+      if (!currentSection) return prevData;
+  
+      updatedData[currentSection].tasks = updatedData[
+        currentSection
+      ].tasks.map((task) =>
+        task._id === updatedTask._id ? updatedTask : task
+      );
+  
+      return updatedData;
+    });
+  };
+  
+
   const handleAddTask = (sectionId: TaskStatus, task: Task) => {
     setData((prevData) => ({
       ...prevData,
@@ -130,8 +159,8 @@ const Board: React.FC = () => {
           onDragStart={handleDragStart}
           onDrop={handleDrop}
           onAddTask={handleAddTask}
-          onUpdateTask={() => {}}
-          onDeleteTask={() => {}}
+          onUpdateTask={handleUpdateTask}
+          onDeleteTask={handleDeleteTask}
         />
       ))}
     </div>

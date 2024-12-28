@@ -35,18 +35,19 @@ const Task: React.FC<TaskProps> = ({ task, sectionId, onDragStart, onUpdateTask,
       });
       setEditedTask(updatedTask);
       setIsEditing(false);
-      onUpdateTask(updatedTask); // Call the callback function to update the task in the parent component
+      onUpdateTask(updatedTask);
     } catch (error) {
       console.error("Failed to update task:", error);
     }
   };
+  
 
   const handleDeleteConfirm = async () => {
     setDeleting(true);
     try {
       await deleteTask(task._id || "");
       setIsDeleteModalOpen(false);
-      onDeleteTask(task._id || ""); // Call the callback function to delete the task in the parent component
+      onDeleteTask(task._id || ""); 
       console.log("Task deleted successfully");
     } catch (error) {
       console.error("Failed to delete task:", error);
