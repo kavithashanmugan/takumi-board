@@ -74,7 +74,7 @@ const Board: React.FC = () => {
     if (!taskToMove) return;
 
     try {
-      const updatedTask = await updateTask(taskId, { status: destinationSection });
+      const updatedTask = await updateTask(taskId, { status: destinationSection, isCompleted: destinationSection === "done" });
 
       setData((prevData: DataType) => {
         const sourceTasks = prevData[sourceSection].tasks.filter(
