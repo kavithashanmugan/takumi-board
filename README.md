@@ -1,6 +1,6 @@
-# Takumi
+# Takumi Board
 
-**Takumi** (匠), inspired by the Japanese word for "artisan" or "master craftsman," reflects our commitment to precision, expertise, and dedication in software craftsmanship. This project is a modern React application built with Vite, designed to deliver a seamless and efficient task management experience.
+**Takumi** (匠), inspired by the Japanese word for "artisan" or "master craftsman," reflects our commitment to precision, expertise, and dedication in software craftsmanship. Takumi Board is a modern React application built with Vite, designed to deliver a seamless and efficient task management experience.
 
 
 ## **Table of Contents**
