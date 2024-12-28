@@ -1,6 +1,6 @@
-# Takumi
+# Takumi Board
 
-**Takumi** (匠), inspired by the Japanese word for "artisan" or "master craftsman," reflects our commitment to precision, expertise, and dedication in software craftsmanship. This project is a modern React application built with Vite, designed to deliver a seamless and efficient task management experience.
+**Takumi** (匠), inspired by the Japanese word for "artisan" or "master craftsman," reflects our commitment to precision, expertise, and dedication in software craftsmanship. Takumi Board is a modern React application built with Vite, designed to deliver a seamless and efficient task management experience.
 
 
 ## **Table of Contents**
@@ -21,6 +21,7 @@ This project leverages modern web technologies like **React** and **Vite** to en
 - Fully responsive design optimized for all devices.
 - Integration with RESTful APIs for data fetching and persistence.
 - For the POC - we have named the board id to backend1
+- backend url - https://takumi-v2.vercel.app/
 
 ---
 
@@ -111,3 +112,12 @@ npm run build
 -Drag and Drop in Pure TypeScript and React – Kenneth Lange (https://kennethlange.com/drag-and-drop-in-pure-typescript-and-react/)
 -Install Tailwind CSS with Vite - Tailwind CSS - (https://tailwindcss.com/docs/guides/vite)
 -add dashboard to visualize performance metrics based on completion status
+
+![image](https://github.com/user-attachments/assets/47a7b886-7b81-4640-a893-7f16b980a5e7)
+![image](https://github.com/user-attachments/assets/1455f3fc-dbe8-4f7a-8c4e-9ff0c051f556)
+![image](https://github.com/user-attachments/assets/f9018148-168a-49e8-aee3-ccbb9eda9040)
+![image](https://github.com/user-attachments/assets/01f1df60-d491-4191-bfc8-55ad6b8c1440)
+
+
+
+
