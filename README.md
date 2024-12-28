@@ -8,7 +8,6 @@
 2. [Code Architecture](#code-architecture)
 3. [Key Decisions](#key-decisions)
 4. [Setup Instructions](#setup-instructions)
-5. [Deployment](#deployment)
 
 ---
 
