@@ -1,14 +1,16 @@
 export interface Task {
-    id: string;
-    title: string;
-    description?: string;
-    assignedTo?: string;
-    status: TaskStatus;
-    createdAt: Date;
-    updatedAt: Date;
-    dueDate?: string;
-    isCompleted: boolean;
-  }
+  _id?: string;
+  title: string;
+  boardId: "backend1",
+  description?: string;
+  assignedTo?: string;
+  status: TaskStatus;
+  createdAt?: Date | string; 
+  updatedAt?: Date | string;
+  dueDate?: string;
+  isCompleted: boolean;
+}
+
   
   export type TaskStatus = 'todo' | 'in-progress' | 'done';
   

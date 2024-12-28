@@ -3,6 +3,7 @@ import { Plus } from "lucide-react";
 import Task from "./Task";
 import Button from "../components/ui/Button";
 import { Task as TaskType, TaskStatus } from "../types/index";
+import { createTask } from "../api/taskApi";
 
 interface SectionProps {
   sectionId: TaskStatus;
@@ -28,6 +29,7 @@ const Section: React.FC<SectionProps> = ({
   onDrop,
   onAddTask,
 }) => {
+  console.log("tasks", tasks);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [newTask, setNewTask] = useState({
     title: "",
@@ -39,33 +41,40 @@ const Section: React.FC<SectionProps> = ({
     setIsPopupOpen(true);
   };
 
-  const handleCreateTask = () => {
-    const task: TaskType = {
-      id: `TASK-${Date.now()}`,
-      title: newTask.title,
-      description: newTask.description,
-      assignedTo: newTask.assignedTo,
-      status: sectionId,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      isCompleted: false,
-    };
-    onAddTask(sectionId, task);
-    setNewTask({ title: "", description: "", assignedTo: "" });
-    setIsPopupOpen(false);
+  const handleCreateTask = async () => {
+    try {
+      const task: TaskType = {
+        _id: "",
+        boardId: "backend1",
+        title: newTask.title,
+        description: newTask.description,
+        assignedTo: newTask.assignedTo,
+        status: sectionId,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        isCompleted: false,
+      };
+
+      const { _id, ...taskWithoutId } = task;
+      const createdTask = await createTask(taskWithoutId);
+      onAddTask(sectionId, createdTask);
+      setNewTask({ title: "", description: "", assignedTo: "" });
+      setIsPopupOpen(false);
+    } catch (error) {
+      console.error("Failed to create task:", error);
+    }
   };
 
-  // Determine background color based on section name
   const getBackgroundColor = () => {
     if (name.toLowerCase() === "to do") return "bg-[#db4437]";
     if (name.toLowerCase() === "in progress") return "bg-[#f0b317]";
     if (name.toLowerCase() === "done") return "bg-[#88c32c]";
-    return "bg-gray-200"; // Default color
+    return "bg-gray-200";
   };
 
   return (
     <div
-      className="bg-gray-50 rounded-lg p-4 shadow-sm border border-gray-200 w-full sm:w-[300px] md:w-[280px] lg:w-[300px] xl:w-[320px]"
+      className="bg-white rounded-lg p-4 shadow-sm border border-gray-200 w-full sm:w-[300px] md:w-[280px] lg:w-[300px] xl:w-[320px]"
       onDragOver={(event) => event.preventDefault()}
       onDrop={(event) => onDrop(event, sectionId)}
     >
@@ -84,12 +93,12 @@ const Section: React.FC<SectionProps> = ({
           onClick={handleAddTaskClick}
           size="medium"
           variant="custom"
-          className="w-full mt-4 py-2 px-4 text-sm text-gray-500 hover:text-gray-700 hover:bg-gray-200 rounded-md transition-colors duration-200 flex items-center justify-center"
+          className="w-full mt-4 py-2 px-4 text-sm text-gray-500 hover:text-black hover:bg-gray-100 rounded-md transition-colors duration-200 flex items-center justify-center"
         />
 
-        {tasks.map((task) => (
+        {tasks.map((task, index) => (
           <Task
-            key={task.id}
+            key={`${task._id}-${index}`}
             task={task}
             sectionId={sectionId}
             onDragStart={onDragStart}
