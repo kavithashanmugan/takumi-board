@@ -6,6 +6,7 @@ function App() {
     <div className="flex justify-center items-center min-h-screen bg-gray-100">
       <Navbar />
     <div className="my-[10%] text-center">
+      TAKUMI
     <Board />
     </div>
   </div>
